@@ -158,8 +158,11 @@ int main()
 //    Shader irradianceShader("/书/OGL_Test/Shader/cubemap.vs", "/书/OGL_Test/Shader/irradiance_convolution.fs");//辐照度图卷积
     
     
-    Shader prefilterShader("/书/OGL_Test/Shader/cubemap.vs", "/书/OGL_Test/Shader/prefilter.fs");
-    Shader brdfShader("/书/OGL_Test/Shader/brdf.vs", "/书/OGL_Test/Shader/brdf.fs");
+//    Shader prefilterShader("/书/OGL_Test/Shader/cubemap.vs", "/书/OGL_Test/Shader/prefilter.fs");
+//    Shader brdfShader("/书/OGL_Test/Shader/brdf.vs", "/书/OGL_Test/Shader/brdf.fs");
+   
+    
+    
     Shader backgroundShader("/书/OGL_Test/Shader/background.vs", "/书/OGL_Test/Shader/background.fs");
 
 
@@ -244,6 +247,19 @@ int main()
 
 
 
+    
+    
+    
+    //======================
+    unsigned int noiseMap        = GORK::LoadTexture("/书/OGL_Test/", "/z1000",".jpg",NotFlip,Repeat,RGB,mipmap);
+    //    unsigned int noiseMap        = GORK::LoadTexture("/书/OGL_Test/", "/z1000m",".png",NotFlip,Repeat,RGB,mipmap);
+    unsigned int noiseMap1        = GORK::LoadTexture("/书/OGL_Test/", "/z1000",".jpg",Flip,Repeat,RGB,mipmap);
+    //=========================
+    
+    
+    
+    
+    
 
 
     // lights
@@ -277,17 +293,10 @@ int main()
 //    // ----------------------
     unsigned int captureFBO;
     unsigned int captureRBO;
-////    glGenFramebuffers(1, &captureFBO);//帧缓冲
-////    glGenRenderbuffers(1, &captureRBO);// 渲染缓冲对象。我们需要 深度 用于测试，但不需要对它们进行采样，所以渲染缓冲对象（只写）非常适合它们
-////
-////    glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);//绑定帧缓冲对象
-////    glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);//绑定渲染缓冲对象
-////    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);//24位深度
-////    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);// 把rbo附加到帧缓冲的深度附件上
+
     GORK::SetupFramebuffer(captureFBO,captureRBO);
     
     
-    unsigned int envCubemap; // 帧缓冲的纹理附件（生成相应的立方体贴图，为其六个面预先分配内存）
 
     
     
@@ -309,6 +318,10 @@ int main()
     
     
     
+    
+    
+    unsigned int envCubemap; // 帧缓冲的纹理附件（生成相应的立方体贴图，为其六个面预先分配内存）
+
     
     GORK::HdrToCubemap(envCubemap, captureProjection, captureViews);//HDR转换为立方体贴图
     
@@ -334,14 +347,7 @@ int main()
     
     
     
-    //======================
-        unsigned int noiseMap        = GORK::LoadTexture("/书/OGL_Test/", "/z1000",".jpg",NotFlip,Repeat,RGB,mipmap);
-    //    unsigned int noiseMap        = GORK::LoadTexture("/书/OGL_Test/", "/z1000m",".png",NotFlip,Repeat,RGB,mipmap);
-        unsigned int noiseMap1        = GORK::LoadTexture("/书/OGL_Test/", "/z1000",".jpg",Flip,Repeat,RGB,mipmap);
-    //    prefilterShader.setInt("noiseMap", 1);
-    //    glActiveTexture(GL_TEXTURE1);
-    //    glBindTexture(GL_TEXTURE_2D, noiseMap);
-    //=========================
+    
     
     
     
@@ -363,31 +369,19 @@ int main()
     // pbr IBL2 (specular): 根据所使用的BRDF方程生成2D LUT。
     // ----------------------------------------------------
     unsigned int brdfLUTTexture;
-    glGenTextures(1, &brdfLUTTexture);
+    
 
-    // 为LUT纹理预先分配足够的内存。（512*512）
-    glBindTexture(GL_TEXTURE_2D, brdfLUTTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, 512, 512, 0, GL_RG, GL_FLOAT, 0);
-    // be sure to set wrapping mode to GL_CLAMP_TO_EDGE（防止边缘采样的伪像）
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    GORK::CreateBrdfLUTTexture(brdfLUTTexture, captureFBO, captureRBO);
 
-    // 然后重新配置帧缓冲区对象captureFBO，并使用BRDF着色器渲染屏幕空间四边形。
-    glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
-    glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, brdfLUTTexture, 0);
-
-    glViewport(0, 0, 512, 512);
-    brdfShader.use();
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    GORK::RenderQuad();
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     // initialize static shader uniforms before rendering
     // --------------------------------------------------
@@ -412,11 +406,6 @@ int main()
 
 
 
-    bool nb = true;
-//    bool nb1 = true;
-//    bool nb2 = true;
-//    bool nb3 = true;
-
 
     // ------------------------------
     // 渲染循环 render loop
@@ -432,7 +421,7 @@ int main()
 
 
         // 输入 input
-        GORK::ProcessInput(window, standardDeviation, nb); //输入控制（检查是否按下Esc）
+        GORK::ProcessInput(window); //输入控制（检查是否按下Esc）
 
 
         

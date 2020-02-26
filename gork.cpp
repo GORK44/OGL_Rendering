@@ -41,7 +41,7 @@ void GORK::Framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 // 在GLFW中实现一些输入控制：WSAD 和 esc
 // --------------------------------------
-void GORK::ProcessInput(GLFWwindow *window, float &nn, bool &nb)
+void GORK::ProcessInput(GLFWwindow *window)
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) //检查用户是否按下了返回键(Esc)
     glfwSetWindowShouldClose(window, true); //GLFW被要求退出（渲染循环时检查）
@@ -747,4 +747,38 @@ void GORK::CreatePrefilterMap(unsigned int &prefilterMap, unsigned int &envCubem
     
     
 
+}
+
+
+
+void GORK::CreateBrdfLUTTexture(unsigned int &brdfLUTTexture, unsigned int &captureFBO, unsigned int &captureRBO)
+{
+    
+    
+    Shader brdfShader("/书/OGL_Test/Shader/brdf.vs", "/书/OGL_Test/Shader/brdf.fs");
+    
+    
+    glGenTextures(1, &brdfLUTTexture);
+    
+    // 为LUT纹理预先分配足够的内存。（512*512）
+    glBindTexture(GL_TEXTURE_2D, brdfLUTTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, 512, 512, 0, GL_RG, GL_FLOAT, 0);
+    // be sure to set wrapping mode to GL_CLAMP_TO_EDGE（防止边缘采样的伪像）
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    // 然后重新配置帧缓冲区对象captureFBO，并使用BRDF着色器渲染屏幕空间四边形。
+    glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+    glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, brdfLUTTexture, 0);
+    
+    glViewport(0, 0, 512, 512);
+    brdfShader.use();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    GORK::RenderQuad();
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

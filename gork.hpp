@@ -209,7 +209,7 @@ public:
 
     
     static void Framebuffer_size_callback(GLFWwindow* window, int width, int height); // 在每次窗口大小被调整的时候被调用
-    static void ProcessInput(GLFWwindow *window, float &nn, bool &nb); //输入控制
+    static void ProcessInput(GLFWwindow *window); //输入控制
     static void Mouse_callback(GLFWwindow* window, double xpos, double ypos);//鼠标移动控制方向
     static void Scroll_callback(GLFWwindow* window, double xoffset, double yoffset);//滚轮控制FOV
     
@@ -239,6 +239,8 @@ public:
     static void CreateIrradianceMap(unsigned int &irradianceMap, unsigned int &envCubemap, unsigned int &captureFBO, unsigned int &captureRBO, glm::mat4 captureProjection, glm::mat4 captureViews[6]);//创建漫反射辐照度贴图
     
     static void CreatePrefilterMap(unsigned int &prefilterMap, unsigned int &envCubemap, unsigned int &captureFBO, unsigned int &captureRBO, glm::mat4 captureProjection, glm::mat4 captureViews[6]);//创建预滤波HDR环境贴图(粗糙度用mipmapw解决)
+    
+    static void CreateBrdfLUTTexture(unsigned int &brdfLUTTexture, unsigned int &captureFBO, unsigned int &captureRBO);//根据所使用的BRDF方程生成2D LUT
     
     //======================
 
