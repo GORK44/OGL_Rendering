@@ -17,7 +17,7 @@
 #include <random>
 
 
-//#include "Shader.hpp"
+#include "Shader.hpp"
 #include "Camera.hpp"
 //#include "Model.hpp"
 
@@ -229,8 +229,18 @@ public:
     static void RenderSphere();
 
     
-    static void SetupFramebuffer(unsigned int &captureFBO, unsigned int &captureRBO);
+    //======================
+    //pbr
+    static void SetupFramebuffer(unsigned int &captureFBO, unsigned int &captureRBO); // IBL 漫反射辐照度
+    // pbr: setup framebuffer 设定帧缓冲（记录HDR转换为立方体的六个面）
     
+    static void HdrToCubemap(unsigned int &envCubemap, glm::mat4 captureProjection, glm::mat4 captureViews[6]);//HDR转换成立方体贴图
+    
+    static void CreateIrradianceMap(unsigned int &irradianceMap, unsigned int &envCubemap, unsigned int &captureFBO, unsigned int &captureRBO, glm::mat4 captureProjection, glm::mat4 captureViews[6]);//创建漫反射辐照度贴图
+    
+    static void CreatePrefilterMap(unsigned int &prefilterMap, unsigned int &envCubemap, unsigned int &captureFBO, unsigned int &captureRBO, glm::mat4 captureProjection, glm::mat4 captureViews[6]);//创建预滤波HDR环境贴图(粗糙度用mipmapw解决)
+    
+    //======================
 
 };
 
