@@ -551,6 +551,22 @@ int main()
 
 //        scale = 1000000000;
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         glActiveTexture(GL_TEXTURE3);
         glBindTexture(GL_TEXTURE_2D, noiseMap);
         
@@ -560,8 +576,8 @@ int main()
             glBindTexture(GL_TEXTURE_2D, noiseMap1);
         }
         
-        glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, normalHuahengMap);
+//        glActiveTexture(GL_TEXTURE4);
+//        glBindTexture(GL_TEXTURE_2D, normalHuahengMap);
         pbrShader_redBall.use();
         pbrShader_redBall.setMat4("view", view);
         

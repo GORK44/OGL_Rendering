@@ -94,29 +94,6 @@ float DistributionGGX(vec3 N, vec3 H, float roughness)
     
     
     
-    //粗NDF=GGX*1000*[正态分布函数(Xi)]  //Xi为真随机数
-    //GGX*20000(m朝向H概率*细粒片元m总数=细粒片元m朝向H总数=1000个粗粒片元中m朝向H总数）
-    //GGX*20000*正态分布函数中一个随机值=随机一个粗粒片元中m朝向H总数
-    //GGX*20000*[正态分布函数(Xi)]/20 = 随机一个粗粒片元中m朝向H的概率 = 粗NDF
-    //20000/20 是粗细粒表面一个片元的微法线m的数量之比（微表面数量之比）。可以随着摄像机距离调节?
-    
-    float GGX = nom / denom;
-    
-    float Xi = 0.5f;
-    
-    //现实世界细粒度模型
-    float o = 1;
-    float ss = 10;
-    
-    
-    float u = 0;//平均数=0
-    
-    float ZhengTai = 1.0/(o * sqrt(2.0 * PI)) * exp(-(Xi-u)*(Xi-u)/(2*o*o));
-    
-    float CuNDF = GGX * ss * ZhengTai; //要找到标准差和 细,粗粒微面之比的关系
-    
-    return CuNDF;
-    
     
 }
 // ----------------------------------------------------------------------------
