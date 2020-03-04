@@ -166,32 +166,40 @@ int main()
     Shader backgroundShader("/书/OGL_Test/Shader/background.vs", "/书/OGL_Test/Shader/background.fs");
 
 
-    pbrShader_redBall.use();
-    pbrShader_redBall.setInt("irradianceMap", 0);
-    pbrShader_redBall.setInt("prefilterMap", 1);
-    pbrShader_redBall.setInt("brdfLUT", 2);
-    pbrShader_redBall.setVec3("albedo", 1.0f, 1.0f, 1.0f);
-    pbrShader_redBall.setFloat("ao", 1.0f);
     
-    pbrShader_redBall.setInt("noiseMap", 3);
-    pbrShader_redBall.setInt("normalMap", 4);
-    unsigned int normalHuahengMap        = GORK::LoadTexture("/书/OGL_Test/", "/noiseNormal",".jpg",NotFlip,Repeat,RGB,linear);
-
-
-    pbrShader.use();
-    pbrShader.setInt("irradianceMap", 0);// shader中的 irradianceMap 对应 GL_TEXTURE0 绑定的纹理
-    pbrShader.setInt("prefilterMap", 1);// 预滤波贴图
-    pbrShader.setInt("brdfLUT", 2); // LUT贴图
-    pbrShader.setInt("albedoMap", 3); // 反照率（基础颜色）贴图
-    pbrShader.setInt("normalMap", 4); // 法线贴图
-    pbrShader.setInt("metallicMap", 5); // 金属度贴图
-    pbrShader.setInt("roughnessMap", 6); // 粗糙度贴图
-    pbrShader.setInt("aoMap", 7); // 环境光遮蔽贴图
     
-    pbrShader.setInt("noiseMap", 8);
+    
+    
+    GORK::ShaderSet_PBR_Ball(pbrShader_redBall);
+//    pbrShader_redBall.use();
+//    pbrShader_redBall.setInt("irradianceMap", 0);
+//    pbrShader_redBall.setInt("prefilterMap", 1);
+//    pbrShader_redBall.setInt("brdfLUT", 2);
+//    pbrShader_redBall.setVec3("albedo", 1.0f, 1.0f, 1.0f);
+//    pbrShader_redBall.setFloat("ao", 1.0f);
+//
+//    pbrShader_redBall.setInt("noiseMap", 3);
+    
+    
+    
+    
+    GORK::ShaderSet_PBR_Model(pbrShader);
+//    pbrShader.use();
+//    pbrShader.setInt("irradianceMap", 0);// shader中的 irradianceMap 对应 GL_TEXTURE0 绑定的纹理
+//    pbrShader.setInt("prefilterMap", 1);// 预滤波贴图
+//    pbrShader.setInt("brdfLUT", 2); // LUT贴图
+//    pbrShader.setInt("albedoMap", 3); // 反照率（基础颜色）贴图
+//    pbrShader.setInt("normalMap", 4); // 法线贴图
+//    pbrShader.setInt("metallicMap", 5); // 金属度贴图
+//    pbrShader.setInt("roughnessMap", 6); // 粗糙度贴图
+//    pbrShader.setInt("aoMap", 7); // 环境光遮蔽贴图
+//
+//    pbrShader.setInt("noiseMap", 8);
 
 
 
+    
+    
     backgroundShader.use();
     backgroundShader.setInt("environmentMap", 0);
 
@@ -576,8 +584,6 @@ int main()
             glBindTexture(GL_TEXTURE_2D, noiseMap1);
         }
         
-//        glActiveTexture(GL_TEXTURE4);
-//        glBindTexture(GL_TEXTURE_2D, normalHuahengMap);
         pbrShader_redBall.use();
         pbrShader_redBall.setMat4("view", view);
         

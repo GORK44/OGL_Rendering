@@ -44,6 +44,10 @@ const bool sRGB = true;//是sRGB纹理，已经gammaCorrection
 const bool RGB = false;
 
 
+
+
+
+
 //typedef struct{
 //    ...
 //    ...
@@ -243,6 +247,15 @@ public:
     static void CreateBrdfLUTTexture(unsigned int &brdfLUTTexture, unsigned int &captureFBO, unsigned int &captureRBO);//根据所使用的BRDF方程生成2D LUT
     
     //======================
+    
+    
+    static void ShaderSet_PBR_Ball(Shader pbrShader_redBall);
+    
+    static void ShaderSet_PBR_Model(Shader pbrShader);
+
+    
+ 
+    
 
 };
 

@@ -782,3 +782,34 @@ void GORK::CreateBrdfLUTTexture(unsigned int &brdfLUTTexture, unsigned int &capt
     
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
+
+
+void GORK::ShaderSet_PBR_Ball(Shader pbrShader_redBall)
+{
+    pbrShader_redBall.use();
+    pbrShader_redBall.setInt("irradianceMap", 0);
+    pbrShader_redBall.setInt("prefilterMap", 1);
+    pbrShader_redBall.setInt("brdfLUT", 2);
+    pbrShader_redBall.setVec3("albedo", 1.0f, 1.0f, 1.0f);
+    pbrShader_redBall.setFloat("ao", 1.0f);
+    
+    pbrShader_redBall.setInt("noiseMap", 3);
+}
+
+void GORK::ShaderSet_PBR_Model(Shader pbrShader)
+{
+    pbrShader.use();
+    pbrShader.setInt("irradianceMap", 0);// shader中的 irradianceMap 对应 GL_TEXTURE0 绑定的纹理
+    pbrShader.setInt("prefilterMap", 1);// 预滤波贴图
+    pbrShader.setInt("brdfLUT", 2); // LUT贴图
+    pbrShader.setInt("albedoMap", 3); // 反照率（基础颜色）贴图
+    pbrShader.setInt("normalMap", 4); // 法线贴图
+    pbrShader.setInt("metallicMap", 5); // 金属度贴图
+    pbrShader.setInt("roughnessMap", 6); // 粗糙度贴图
+    pbrShader.setInt("aoMap", 7); // 环境光遮蔽贴图
+    
+    pbrShader.setInt("noiseMap", 8);
+}
+
+
+
