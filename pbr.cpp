@@ -313,16 +313,16 @@ int main()
     // 设置投影和观察矩阵，以将数据捕获到6个立方图面方向上
     // ----------------------------------------------------------------------------------------------
     glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);//投影矩阵（FOV视锥体竖直张开角度，横向竖直张开角度比，近裁剪面深度，远裁剪面深度）
-    glm::mat4 captureViews[] =
-    {
-        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)), //相机位置，相机方向，up竖直向上向量
-        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
-        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
-        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
-    };
-    
+//    glm::mat4 captureViews[] =
+//    {
+//        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)), //相机位置，相机方向，up竖直向上向量
+//        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+//        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
+//        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
+//        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+//        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
+//    };
+//    glm::mat4 captureViews[] = *GORK::CubeCapture();
     
     
     
@@ -331,8 +331,9 @@ int main()
     unsigned int envCubemap; // 帧缓冲的纹理附件（生成相应的立方体贴图，为其六个面预先分配内存）
 
     
-    GORK::HdrToCubemap(envCubemap, captureProjection, captureViews);//HDR转换为立方体贴图
-    
+//    GORK::HdrToCubemap(envCubemap, captureProjection, captureViews);//HDR转换为立方体贴图
+    GORK::HdrToCubemap(envCubemap, captureProjection, GORK::CubeCapture());//HDR转换为立方体贴图
+
     
     
     
@@ -350,8 +351,8 @@ int main()
     
     
     
-    GORK::CreateIrradianceMap(irradianceMap, envCubemap, captureFBO, captureRBO, captureProjection, captureViews);//创建辐照度立方体贴图
-    
+//    GORK::CreateIrradianceMap(irradianceMap, envCubemap, captureFBO, captureRBO, captureProjection, captureViews);//创建辐照度立方体贴图
+    GORK::CreateIrradianceMap(irradianceMap, envCubemap, captureFBO, captureRBO, captureProjection, GORK::CubeCapture());//创建辐照度立方体贴图
     
     
     
@@ -365,7 +366,8 @@ int main()
     // --------------------------------------------------------------------------------
     unsigned int prefilterMap;
     
-    GORK::CreatePrefilterMap(prefilterMap, envCubemap, captureFBO, captureRBO, captureProjection, captureViews);
+//    GORK::CreatePrefilterMap(prefilterMap, envCubemap, captureFBO, captureRBO, captureProjection, captureViews);
+    GORK::CreatePrefilterMap(prefilterMap, envCubemap, captureFBO, captureRBO, captureProjection, GORK::CubeCapture());
     
     
     

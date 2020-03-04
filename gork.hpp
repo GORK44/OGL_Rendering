@@ -254,7 +254,7 @@ public:
     static void ShaderSet_PBR_Model(Shader pbrShader);
 
     
- 
+    static glm::mat4 * CubeCapture();
     
 
 };

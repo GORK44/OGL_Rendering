@@ -711,14 +711,7 @@ void GORK::CreatePrefilterMap(unsigned int &prefilterMap, unsigned int &envCubem
     prefilterShader.setMat4("projection", captureProjection);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
-    //======================
-    //    unsigned int noiseMap        = GORK::LoadTexture("/书/OGL_Test/", "/z1000",".jpg",NotFlip,Repeat,RGB,mipmap);
-    ////    unsigned int noiseMap        = GORK::LoadTexture("/书/OGL_Test/", "/z1000m",".png",NotFlip,Repeat,RGB,mipmap);
-    //    unsigned int noiseMap1        = GORK::LoadTexture("/书/OGL_Test/", "/z1000",".jpg",Flip,Repeat,RGB,mipmap);
-    //    prefilterShader.setInt("noiseMap", 1);
-    //    glActiveTexture(GL_TEXTURE1);
-    //    glBindTexture(GL_TEXTURE_2D, noiseMap);
-    //=========================
+    
     glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
     unsigned int maxMipLevels = 5;
     for (unsigned int mip = 0; mip < maxMipLevels; ++mip)
@@ -812,4 +805,21 @@ void GORK::ShaderSet_PBR_Model(Shader pbrShader)
 }
 
 
+glm::mat4 * GORK::CubeCapture()
+{
+    //C++ 不支持在函数外返回局部变量的地址，除非定义局部变量为 static 变量
+    static glm::mat4 captureViews[] =
+    {
+        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)), //相机位置，相机方向，up竖直向上向量
+        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
+        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
+        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
+    };
+    
+    
+    
+    return captureViews;
+}
 
