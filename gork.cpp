@@ -823,3 +823,71 @@ glm::mat4 * GORK::CubeCapture()
     return captureViews;
 }
 
+void GORK::SetLights(glm::vec3 *lightPositions, glm::vec3 *lightColors, Shader pbrShader, Shader pbrShader_redBall)
+{
+    //传光源数据。并为了方便用同一个shader画出光源球
+    for (unsigned int i = 0; i < sizeof(*lightPositions) / sizeof(lightPositions[0]); ++i)
+    {
+        i = 3;
+    
+    
+        glm::vec3 newPos = lightPositions[i] + glm::vec3(sin(glfwGetTime() * 5.0) * 5.0, 0.0, 0.0);
+        newPos = lightPositions[i];
+        //            newPos = lightPos;
+        pbrShader_redBall.use();
+        pbrShader_redBall.setVec3("lightPositions[" + std::to_string(i) + "]", newPos);
+        pbrShader_redBall.setVec3("lightColors[" + std::to_string(i) + "]", lightColors[i]);
+        pbrShader.use();
+        pbrShader.setVec3("lightPositions[" + std::to_string(i) + "]", newPos);
+        pbrShader.setVec3("lightColors[" + std::to_string(i) + "]", lightColors[i]);
+        //
+        //            // 画光源球
+        //            model = glm::mat4(1.0f);
+        //            model = glm::translate(model, newPos);
+        //            model = glm::scale(model, glm::vec3(0.5f));
+        //            pbrShader_redBall.setMat4("model", model);
+        //            GORK::RenderSphere();
+    }
+}
+
+void GORK::MaterialBalls(Shader pbrShader_redBall, int nrRows, int nrColumns, float spacing)
+{
+    
+    //        // 使用材质定义的材质属性渲染行*列数的球体（它们都具有相同的材质属性）
+    for (int row = 0; row < nrRows; ++row)//行数
+    {
+        pbrShader_redBall.setFloat("metallic", (float)row / (float)nrRows);//行数从下往上，金属度从低到高
+        
+        for (int col = 0; col < nrColumns; ++col)//列数
+        {
+            // 我们将粗糙度限制在0.025-1.0，因为完全光滑的表面（0.0的粗糙度）看起来有点偏离
+            // 在直接照明下 on direct lighting.
+            pbrShader_redBall.setFloat("roughness", glm::clamp((float)col / (float)nrColumns, 0.0f, 1.0f));//列数从左到右，粗糙度从小到大
+            
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, glm::vec3(
+                                                    (float)(col - (nrColumns / 2)) * spacing,
+                                                    (float)(row - (nrRows / 2)) * spacing,
+                                                    -2.0f
+                                                    ));
+            //                model = glm::translate(model, glm::vec3(
+            //                                                        (float)(col - (nrColumns / 2)) * spacing,
+            //                                                        (float)(row - (nrRows / 2)) * spacing,
+            //                                                        -2.0f
+            //                                                        )+ glm::vec3(0.005*sin(glfwGetTime()) * 4.0f));
+            pbrShader_redBall.setMat4("model", model);
+            GORK::RenderSphere();
+            //                bunny.Draw(pbrShader_redBall);
+            //                GORK::RenderCube();
+        }
+        
+    }
+}
+
+void GORK::ShaderSet(Shader shader, glm::mat4 view, glm::vec3 camPos, glm::mat4 projection)
+{
+    shader.use();
+    shader.setMat4("view", view);
+    shader.setVec3("camPos", camPos);
+    shader.setMat4("projection", projection);
+}

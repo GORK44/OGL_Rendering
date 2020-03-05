@@ -256,7 +256,12 @@ public:
     
     static glm::mat4 * CubeCapture();
     
+    static void SetLights(glm::vec3 * lightPositions, glm::vec3 * lightColors, Shader pbrShader, Shader pbrShader_redBall);
 
+    static void MaterialBalls(Shader pbrShader_redBall, int nrRows = 7, int nrColumns = 7, float spacing = 2.5);
+    
+    static void ShaderSet(Shader shader, glm::mat4 view, glm::vec3 camPos, glm::mat4 projection);
+    
 };
 
 
