@@ -146,21 +146,6 @@ int main()
 
 
 
-    
-    
-    
-    //======================
-    unsigned int noiseMap        = GORK::LoadTexture("/书/OGL_Test/", "/z1000",".jpg",NotFlip,Repeat,RGB,mipmap);
-    //    unsigned int noiseMap        = GORK::LoadTexture("/书/OGL_Test/", "/z1000m",".png",NotFlip,Repeat,RGB,mipmap);
-    unsigned int noiseMap1        = GORK::LoadTexture("/书/OGL_Test/", "/z1000",".jpg",Flip,Repeat,RGB,mipmap);
-    //=========================
-    
-    
-    
-    
-    
-
-
     // lights
     // ------
     glm::vec3 lightPositions[] = {
@@ -181,8 +166,6 @@ int main()
 
 // ------------------------------------------------------------------------------
 
-    //========================================================================
-
 
 
     //========================================================================
@@ -196,34 +179,19 @@ int main()
     GORK::SetupFramebuffer(captureFBO,captureRBO);
     
     
-
-    
-    
-    
-    
     // 设置投影和观察矩阵，以将数据捕获到6个立方图面方向上
     // ----------------------------------------------------------------------------------------------
     glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);//投影矩阵（FOV视锥体竖直张开角度，横向竖直张开角度比，近裁剪面深度，远裁剪面深度）
 
-    
-    
-    
-    
     unsigned int envCubemap; // 帧缓冲的纹理附件（生成相应的立方体贴图，为其六个面预先分配内存）
-
     GORK::HdrToCubemap(envCubemap, captureProjection, GORK::CubeCapture());//HDR转换为立方体贴图
 
-    
     
     
     // pbr IBL1 : 创建辐照度立方体贴图，然后重新将FBO捕获缩放为辐照度比例。
     // --------------------------------------------------------------------------------
     unsigned int irradianceMap;//帧缓冲的纹理附件
-    
-//    GORK::CreateIrradianceMap(irradianceMap, envCubemap, captureFBO, captureRBO, captureProjection, captureViews);//创建辐照度立方体贴图
     GORK::CreateIrradianceMap(irradianceMap, envCubemap, captureFBO, captureRBO, captureProjection, GORK::CubeCapture());//创建辐照度立方体贴图
-    
-    
     
     
     
@@ -231,10 +199,7 @@ int main()
     // pbr IBL2 (specular): 创建预滤波HDR环境贴图，帧缓冲纹理附件大小：128 * 128
     // --------------------------------------------------------------------------------
     unsigned int prefilterMap;
-    
-//    GORK::CreatePrefilterMap(prefilterMap, envCubemap, captureFBO, captureRBO, captureProjection, captureViews);
     GORK::CreatePrefilterMap(prefilterMap, envCubemap, captureFBO, captureRBO, captureProjection, GORK::CubeCapture());
-    
     
     
     
@@ -242,7 +207,6 @@ int main()
     // pbr IBL2 (specular): 根据所使用的BRDF方程生成2D LUT。
     // ----------------------------------------------------
     unsigned int brdfLUTTexture;
-
     GORK::CreateBrdfLUTTexture(brdfLUTTexture, captureFBO, captureRBO);
 
     
@@ -254,10 +218,6 @@ int main()
     int scrWidth, scrHeight;
     glfwGetFramebufferSize(window, &scrWidth, &scrHeight);
     glViewport(0, 0, scrWidth, scrHeight);
-
-
-
-
 
     //========================================================================
 
@@ -291,21 +251,13 @@ int main()
         // -----------------------------------------
         // 第一处理阶段(Pass 1)
         //=========================================================================
-//        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);// 绑定到帧缓冲区并绘制场景，就像我们通常用颜色纹理一样
-//        glEnable(GL_DEPTH_TEST); // 启用深度测试 ( Pass 2 中渲染屏幕空间四边形时被禁用 )
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //设置清空屏幕后填充的颜色
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //清空屏幕的 颜色缓冲 和 深度缓冲
-//        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); //清空模版缓冲
-
-
 
 
         // draw 绘制场景
         // -----------------------------------------
-
-
-
 //        // 配置观察/投影矩阵 configure view/projection matrices
         glm::mat4 projection = glm::perspective(glm::radians(GORK::camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f); //投影矩阵（FOV视锥体竖直张开角度，横向竖直张开角度比，近裁剪面深度，远裁剪面深度）
         glm::mat4 view = GORK::camera.GetViewMatrix();
@@ -346,14 +298,10 @@ int main()
         pbrShader.setMat4("model", model);
 //        GORK::RenderSphere();
         bunny.Draw(pbrShader);//兔子
-//        armour.Draw(pbrShader);
-//        cabinet.Draw(pbrShader);
-//        spoon.Draw(pbrShader);
-//        dragon.Draw(pbrShader);
-////        //-------------------------------------------
+//        //-------------------------------------------
 //
 //        //-------------------------------------------
-//        //模型
+//        // 模型
 //        // 绑定PBR材质贴图（传入shader）
         material_cerberus.BindShaderTexture();
 //        //-------------------------------------------
@@ -402,17 +350,6 @@ int main()
         GORK::RenderCube();
 
 
-//        // 把 LUT 渲染到屏幕 render brdfLUTTexture to screen
-//        screenShader.use();
-//        glActiveTexture(GL_TEXTURE0);
-//        glBindTexture(GL_TEXTURE_2D, brdfLUTTexture);
-//        GORK::RenderQuad();
-
-
-
-
-
-
         //=========================================================================
 
 
@@ -422,13 +359,6 @@ int main()
         glfwPollEvents(); //检查有没有触发什么事件
     }
     // -------------------------------
-
-
-
-
-
-
-
 
 
     // 终止，释放/删除之前的分配的所有资源
