@@ -86,8 +86,6 @@ int main()
     //构建并编译着色器程序
     //========================================================================
 
-    Shader whiteShader("/书/OGL_Test/Shader/singleColor.vs", "/书/OGL_Test/Shader/singleColor.fs");
-
     Shader screenShader("/书/OGL_Test/Shader/screen.vs", "/书/OGL_Test/Shader/screen.fs");//帧缓冲
     screenShader.use();
     screenShader.setInt("screenTexture", 0);
@@ -100,7 +98,6 @@ int main()
 
 
     GORK::ShaderSet_PBR_Ball(pbrShader_redBall);
-    
     GORK::ShaderSet_PBR_Model(pbrShader);
     
     backgroundShader.use();
@@ -127,7 +124,6 @@ int main()
 
 
 
-
     // lights
     // ------
     glm::vec3 lightPositions[] = {
@@ -142,9 +138,6 @@ int main()
         glm::vec3(300.0f, 300.0f, 300.0f),
         glm::vec3(300.0f, 300.0f, 300.0f)
     };
-    int nrRows = 7;
-    int nrColumns = 7;
-    float spacing = 2.5;
 
 // ------------------------------------------------------------------------------
 
@@ -154,12 +147,10 @@ int main()
     // IBL 漫反射辐照度 1.HDR转换立方体贴图
 
 //    // pbr: setup framebuffer 设定帧缓冲（记录HDR转换为立方体的六个面）
-//    // ----------------------
     unsigned int captureFBO;
     unsigned int captureRBO;
 
     GORK::SetupFramebuffer(captureFBO,captureRBO);
-    
     
     // 设置投影和观察矩阵，以将数据捕获到6个立方图面方向上
     // ----------------------------------------------------------------------------------------------
@@ -167,31 +158,21 @@ int main()
 
     unsigned int envCubemap; // 帧缓冲的纹理附件（生成相应的立方体贴图，为其六个面预先分配内存）
     GORK::HdrToCubemap(envCubemap, captureProjection, GORK::CubeCapture());//HDR转换为立方体贴图
-
-    
     
     // pbr IBL1 : 创建辐照度立方体贴图，然后重新将FBO捕获缩放为辐照度比例。
     // --------------------------------------------------------------------------------
     unsigned int irradianceMap;//帧缓冲的纹理附件
     GORK::CreateIrradianceMap(irradianceMap, envCubemap, captureFBO, captureRBO, captureProjection, GORK::CubeCapture());//创建辐照度立方体贴图
-    
-    
-    
 
     // pbr IBL2 (specular): 创建预滤波HDR环境贴图，帧缓冲纹理附件大小：128 * 128
     // --------------------------------------------------------------------------------
     unsigned int prefilterMap;
     GORK::CreatePrefilterMap(prefilterMap, envCubemap, captureFBO, captureRBO, captureProjection, GORK::CubeCapture());
     
-    
-    
-    
     // pbr IBL2 (specular): 根据所使用的BRDF方程生成2D LUT。
     // ----------------------------------------------------
     unsigned int brdfLUTTexture;
     GORK::CreateBrdfLUTTexture(brdfLUTTexture, captureFBO, captureRBO);
-
-    
     
 
     // initialize static shader uniforms before rendering
@@ -226,9 +207,6 @@ int main()
 
 
         
-        
-        
-        
         // render
         // -----------------------------------------
         // 第一处理阶段(Pass 1)
@@ -246,8 +224,6 @@ int main()
         glm::mat4 model = glm::mat4(1.0f);
 
         glm::vec3 camPos = GORK::camera.Position;
-
-
 
 //===========================================================================================
         // (pbr IBL Diffuse + Specular)渲染场景，将卷积的辐照度图提供给最终的着色器。
@@ -299,15 +275,10 @@ int main()
        
 ////-------------------------------------------
 
-        
         GORK::ShaderSet(pbrShader_redBall, view, camPos, projection);
         
         glActiveTexture(GL_TEXTURE3);
         glBindTexture(GL_TEXTURE_2D, noiseMap);
-        
-        
-
-        
         
         GORK::MaterialBalls(pbrShader_redBall, 7, 7, 2.5);
         // 使用材质定义的材质属性渲染行*列数的球体（它们都具有相同的材质属性）
@@ -315,11 +286,9 @@ int main()
 ////-------------------------------------------
         
         GORK::SetLights(lightPositions, lightColors, pbrShader, pbrShader_redBall);
-        
         //传光源数据。并为了方便用同一个shader画出光源球
 
 ////-------------------------------------------
-
 
         // 渲染天空盒（最后渲染以防止 overdraw（过度绘制））
         backgroundShader.use();
@@ -331,10 +300,7 @@ int main()
 //        glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
         GORK::RenderCube();
 
-
         //=========================================================================
-
-
 
 
         glfwSwapBuffers(window); //交换颜色缓冲，用来绘制，并且将会作为输出显示在屏幕上。
