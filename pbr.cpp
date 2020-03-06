@@ -29,14 +29,7 @@
 
 //摄像机
 Camera GORK::camera(glm::vec3(0.0f, 0.0f, 2.0f));
-
 glm::vec3 cam = glm::vec3(0.0,0.0,50.0);
-
-float scale = 1000.0f; //细，粗粒表面一个片元的微法线m的数量之比（微表面数量之比）(scale越大，粗粒度越粗，一个片元内微表面越少)
-float average = 0.0f; //正态分布平均数
-float standardDeviation = 0.1f; //标准差
-//float standardDeviation = 1.0f; //标准差
-float timeNoiseMap = 0.0f;
 
 
 int main()
@@ -56,15 +49,6 @@ int main()
     //// 捕捉鼠标 tell GLFW to capture our mouse
     //    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     // ----------------------------------
-
-
-
-
-
-
-
-
-
 
 
 
@@ -95,8 +79,6 @@ int main()
 //    glCullFace(GL_FRONT); //剔除正向面（默认剔除背向面）
 //    glFrontFace(GL_CCW); //将 逆时针 的面定义为正向面【默认 正向面：逆时针，背向面：顺时针】
     //========================================================================
-
-
 
 
 
