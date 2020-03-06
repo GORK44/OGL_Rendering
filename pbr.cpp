@@ -65,42 +65,6 @@ int main()
 
 
 
-//    //========================================================================
-//    // 创建一个帧缓冲 framebuffer configuration
-//    //-----------------------------------------------------
-//    unsigned int framebuffer;
-//    glGenFramebuffers(1, &framebuffer); //创建一个帧缓冲对象
-//    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer); //将它绑定为激活的(Active)帧缓冲，做一些操作，之后解绑帧缓冲。
-//
-//    // 创建颜色附件纹理 create a color attachment texture
-//    unsigned int textureColorbuffer;
-//    glGenTextures(1, &textureColorbuffer); //生成 1 个纹理，保存ID到textureColorbuffer
-//    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);// 绑定纹理，接下来所有GL_TEXTURE_2D操作都是对此纹理
-//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);//生成一个纹理
-//    //参数：纹理目标GL_TEXTURE_2D，Mipmap级别0，纹理存储为RGB格式，宽度，高度，历史遗留总是0，使用RGB值加载，储存为char(byte)数组，图像数据（不初始化）
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);//线性过滤
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0); //把纹理附加到帧缓冲
-//    //参数：缓冲的目标，附加一个颜色附件，附加的纹理类型，附加的纹理本身，多级渐远纹理的级别0
-//
-//    // 渲染缓冲对象 renderbuffer object for depth and stencil 我们需要深度和模板值用于测试，但不需要对它们进行采样，所以渲染缓冲对象（只写）非常适合它们
-//    unsigned int rbo;
-//    glGenRenderbuffers(1, &rbo); //创建一个渲染缓冲对象，保存ID到rbo
-//    glBindRenderbuffer(GL_RENDERBUFFER, rbo);//绑定这个渲染缓冲对象，之后所有的渲染缓冲操作影响当前的rbo
-//    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT); //创建一个 深度(24位) 和 模板(8位) 渲染缓冲对象
-//    glBindRenderbuffer(GL_RENDERBUFFER, 0);//解绑这个渲染缓冲
-//    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // 把rbo附加到帧缓冲的深度和模板附件上
-//
-//    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) //检查帧缓冲是否完整
-//    cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
-//    glBindFramebuffer(GL_FRAMEBUFFER, 0);//解绑帧缓冲
-//
-//    // 线框模式 draw as wireframe
-////        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//帧缓冲：一张纹理六个顶点
-    //========================================================================
-
-
-
 
 
 
@@ -147,102 +111,28 @@ int main()
     screenShader.setInt("screenTexture", 0);
 
 // ------------------------------------------------------------------------------
-    //IBL Diffuse irradiance 漫反射辐照度 + Specular 镜面反射
-//    Shader pbrShader("/书/OGL_Test/Shader/pbr_redBall.vs", "/书/OGL_Test/Shader/pbr_redBall_irradianceMap.fs");
     Shader pbrShader_redBall("/书/OGL_Test/Shader/pbr_redBall.vs", "/书/OGL_Test/Shader/pbr_redBall_specularIBL.fs");
     Shader pbrShader("/书/OGL_Test/Shader/pbr.vs", "/书/OGL_Test/Shader/pbr_IBL.fs");
-//    Shader pbrShader_Model("/书/OGL_Test/Shader/pbr_model.vs", "/书/OGL_Test/Shader/pbr_IBL.fs");
-    
-    
-//    Shader equirectangularToCubemapShader("/书/OGL_Test/Shader/cubemap.vs", "/书/OGL_Test/Shader/equirectangular_to_cubemap.fs");
-//    Shader irradianceShader("/书/OGL_Test/Shader/cubemap.vs", "/书/OGL_Test/Shader/irradiance_convolution.fs");//辐照度图卷积
-    
-    
-//    Shader prefilterShader("/书/OGL_Test/Shader/cubemap.vs", "/书/OGL_Test/Shader/prefilter.fs");
-//    Shader brdfShader("/书/OGL_Test/Shader/brdf.vs", "/书/OGL_Test/Shader/brdf.fs");
    
-    
-    
     Shader backgroundShader("/书/OGL_Test/Shader/background.vs", "/书/OGL_Test/Shader/background.fs");
 
 
-    
-    
-    
-    
     GORK::ShaderSet_PBR_Ball(pbrShader_redBall);
-//    pbrShader_redBall.use();
-//    pbrShader_redBall.setInt("irradianceMap", 0);
-//    pbrShader_redBall.setInt("prefilterMap", 1);
-//    pbrShader_redBall.setInt("brdfLUT", 2);
-//    pbrShader_redBall.setVec3("albedo", 1.0f, 1.0f, 1.0f);
-//    pbrShader_redBall.setFloat("ao", 1.0f);
-//
-//    pbrShader_redBall.setInt("noiseMap", 3);
-    
-    
-    
     
     GORK::ShaderSet_PBR_Model(pbrShader);
-//    pbrShader.use();
-//    pbrShader.setInt("irradianceMap", 0);// shader中的 irradianceMap 对应 GL_TEXTURE0 绑定的纹理
-//    pbrShader.setInt("prefilterMap", 1);// 预滤波贴图
-//    pbrShader.setInt("brdfLUT", 2); // LUT贴图
-//    pbrShader.setInt("albedoMap", 3); // 反照率（基础颜色）贴图
-//    pbrShader.setInt("normalMap", 4); // 法线贴图
-//    pbrShader.setInt("metallicMap", 5); // 金属度贴图
-//    pbrShader.setInt("roughnessMap", 6); // 粗糙度贴图
-//    pbrShader.setInt("aoMap", 7); // 环境光遮蔽贴图
-//
-//    pbrShader.setInt("noiseMap", 8);
-
-
-
-    
     
     backgroundShader.use();
     backgroundShader.setInt("environmentMap", 0);
 
 
 
-    // 加载PBR材质纹理 load PBR material textures
-    // --------------------------
-//    char folderName[] ="/书/OGL_Test/材质/rustediron1-alt2-Unreal-Engine";
-//    char folderName[] ="/书/OGL_Test/材质/Iron-Scuffed_Unreal-Engine";
-//    char folderName[] ="/书/OGL_Test/材质/gold-scuffed-Unreal-Engine";
-////////    char folderName[] ="/书/OGL_Test/材质/layered-rock1-ue";
-////////    char folderName[] ="/书/OGL_Test/材质/gray-bricks1-ue4";
-////////    char folderName[] ="/书/OGL_Test/材质/metalgrid2-ogl";
-//
-//
-//
-////    char folderName[] ="/书/OGL_Test/材质/greasy-metal-pan1-Unreal-Engine 2";
-//
-//    unsigned int albedoMap    = GORK::LoadTexture(folderName, "/basecolor.png",NotFlip,Repeat,RGB);
-//    unsigned int normalMap    = GORK::LoadTexture(folderName, "/normal.png",NotFlip,Repeat,RGB);
-//    unsigned int metallicMap  = GORK::LoadTexture(folderName, "/metallic.png",NotFlip,Repeat,RGB);
-//    unsigned int roughnessMap = GORK::LoadTexture(folderName, "/roughness.png",NotFlip,Repeat,RGB);
-//    unsigned int aoMap        = GORK::LoadTexture(folderName, "/ao.png",NotFlip,Repeat,RGB);
-    
+    // ------------------------------------------------------------------------------
     Material material_gold(pbr, "/书/OGL_Test/材质/gold-scuffed-Unreal-Engine", ".png");
     Material material_greasy(pbr, "/书/OGL_Test/材质/greasy-metal-pan1-Unreal-Engine 2", ".png");
     Material material_iron(pbr, "/书/OGL_Test/材质/Iron-Scuffed_Unreal-Engine", ".png");
     Material material_graybricks(pbr, "/书/OGL_Test/材质/gray-bricks1-ue4", ".png");
 
-
-
-    
-    
-
-
-//    char folderName_gun[] ="/书/OGL_Test/枪Cerberus_by_Andrew_Maximov";
-//    unsigned int albedoMap_gun    = GORK::LoadTexture(folderName_gun, "/basecolor.tga",NotFlip,Repeat,RGB);
-//    unsigned int normalMap_gun    = GORK::LoadTexture(folderName_gun, "/normal.tga",NotFlip,Repeat,RGB);
-//    unsigned int metallicMap_gun  = GORK::LoadTexture(folderName_gun, "/metallic.tga",NotFlip,Repeat,RGB);
-//    unsigned int roughnessMap_gun = GORK::LoadTexture(folderName_gun, "/roughness.tga",NotFlip,Repeat,RGB);
-//    unsigned int aoMap_gun        = GORK::LoadTexture(folderName_gun, "/ao.tga",NotFlip,Repeat,RGB);
     Material material_cerberus(pbr, "/书/OGL_Test/枪Cerberus_by_Andrew_Maximov", ".tga");
-    
     
     
     Model gun("/书/OGL_Test/枪Cerberus_by_Andrew_Maximov/Cerberus_LP.FBX");
@@ -251,6 +141,7 @@ int main()
     Model cabinet("/书/OGL_Test/模型/cabinet.FBX");
     Model spoon("/书/OGL_Test/模型/SpoonHD.fbx");
     Model dragon("/书/OGL_Test/模型/stanford-dragon.fbx");
+    // ------------------------------------------------------------------------------
 
 
 
@@ -313,43 +204,21 @@ int main()
     // 设置投影和观察矩阵，以将数据捕获到6个立方图面方向上
     // ----------------------------------------------------------------------------------------------
     glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);//投影矩阵（FOV视锥体竖直张开角度，横向竖直张开角度比，近裁剪面深度，远裁剪面深度）
-//    glm::mat4 captureViews[] =
-//    {
-//        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)), //相机位置，相机方向，up竖直向上向量
-//        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-//        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
-//        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
-//        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-//        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
-//    };
-//    glm::mat4 captureViews[] = *GORK::CubeCapture();
-    
+
     
     
     
     
     unsigned int envCubemap; // 帧缓冲的纹理附件（生成相应的立方体贴图，为其六个面预先分配内存）
 
-    
-//    GORK::HdrToCubemap(envCubemap, captureProjection, captureViews);//HDR转换为立方体贴图
     GORK::HdrToCubemap(envCubemap, captureProjection, GORK::CubeCapture());//HDR转换为立方体贴图
 
-    
-    
-    
-    
-    
-    
-    
-   
     
     
     
     // pbr IBL1 : 创建辐照度立方体贴图，然后重新将FBO捕获缩放为辐照度比例。
     // --------------------------------------------------------------------------------
     unsigned int irradianceMap;//帧缓冲的纹理附件
-    
-    
     
 //    GORK::CreateIrradianceMap(irradianceMap, envCubemap, captureFBO, captureRBO, captureProjection, captureViews);//创建辐照度立方体贴图
     GORK::CreateIrradianceMap(irradianceMap, envCubemap, captureFBO, captureRBO, captureProjection, GORK::CubeCapture());//创建辐照度立方体贴图
@@ -358,9 +227,6 @@ int main()
     
     
     
-    
-    
-
 
     // pbr IBL2 (specular): 创建预滤波HDR环境贴图，帧缓冲纹理附件大小：128 * 128
     // --------------------------------------------------------------------------------
@@ -373,23 +239,12 @@ int main()
     
     
     
-    
-    
-    
     // pbr IBL2 (specular): 根据所使用的BRDF方程生成2D LUT。
     // ----------------------------------------------------
     unsigned int brdfLUTTexture;
-    
 
     GORK::CreateBrdfLUTTexture(brdfLUTTexture, captureFBO, captureRBO);
 
-    
-    
-    
-    
-    
-    
-    
     
     
 
@@ -407,12 +262,6 @@ int main()
     //========================================================================
 
 
-
-
-
-
-
-//    glm::vec3 lightPos = glm::vec3(0.0,0.0,10.0);
 
 
 
@@ -450,9 +299,6 @@ int main()
 //        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); //清空模版缓冲
 
 
-        // 随着时间的推移改变 点光源0 的位置值
-//        lightPos += glm::vec3(0.05*sin(glfwGetTime()) * 2.0f);
-
 
 
         // draw 绘制场景
@@ -472,18 +318,12 @@ int main()
 //===========================================================================================
         // (pbr IBL Diffuse + Specular)渲染场景，将卷积的辐照度图提供给最终的着色器。
         // ------------------------------------------------------------------------------------------
-//        pbrShader.use();
-//        pbrShader.setMat4("view", view);
-//        pbrShader.setVec3("camPos", GORK::camera.Position);
-//        pbrShader.setMat4("projection", projection);
         GORK::ShaderSet(pbrShader, view, camPos, projection);
 
         // -------------------------------------------
         // IBL1 Diffuse irradiance: bind pre-computed IBL data (在shader中绑定辐照度贴图)
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
-//        glActiveTexture(GL_TEXTURE1);
-//        glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
         glActiveTexture(GL_TEXTURE2);
@@ -491,18 +331,6 @@ int main()
         // -------------------------------------------
 
 //        //-------------------------------------------
-        // 材质球
-        // 绑定PBR材质贴图（传入shader）
-//        glActiveTexture(GL_TEXTURE3);
-//        glBindTexture(GL_TEXTURE_2D, albedoMap);
-//        glActiveTexture(GL_TEXTURE4);
-//        glBindTexture(GL_TEXTURE_2D, normalMap);
-//        glActiveTexture(GL_TEXTURE5);
-//        glBindTexture(GL_TEXTURE_2D, metallicMap);
-//        glActiveTexture(GL_TEXTURE6);
-//        glBindTexture(GL_TEXTURE_2D, roughnessMap);
-//        glActiveTexture(GL_TEXTURE7);
-//        glBindTexture(GL_TEXTURE_2D, aoMap);
         
         material_gold.BindShaderTexture();
 //        material_greasy.BindShaderTexture();
@@ -527,19 +355,7 @@ int main()
 //        //-------------------------------------------
 //        //模型
 //        // 绑定PBR材质贴图（传入shader）
-//        glActiveTexture(GL_TEXTURE3);
-//        glBindTexture(GL_TEXTURE_2D, albedoMap_gun);
-//        glActiveTexture(GL_TEXTURE4);
-//        glBindTexture(GL_TEXTURE_2D, normalMap_gun);
-//        glActiveTexture(GL_TEXTURE5);
-//        glBindTexture(GL_TEXTURE_2D, metallicMap_gun);
-//        glActiveTexture(GL_TEXTURE6);
-//        glBindTexture(GL_TEXTURE_2D, roughnessMap_gun);
-//        glActiveTexture(GL_TEXTURE7);
-//        glBindTexture(GL_TEXTURE_2D, aoMap_gun);
         material_cerberus.BindShaderTexture();
-//        glActiveTexture(GL_TEXTURE8);
-//        glBindTexture(GL_TEXTURE_2D, noiseMap);
 //        //-------------------------------------------
 
         model = glm::mat4(1.0f);
@@ -550,114 +366,28 @@ int main()
 //        model = glm::scale(model, glm::vec3(5.0f));
         pbrShader.setMat4("model", model);
         gun.Draw(pbrShader);//渲染枪
-//        //-------------------------------------------
+       
+////-------------------------------------------
 
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-//        pbrShader_redBall.use();
-//        pbrShader_redBall.setMat4("view", view);
-//        pbrShader_redBall.setVec3("camPos", GORK::camera.Position);
-//        pbrShader_redBall.setMat4("projection", projection);
         GORK::ShaderSet(pbrShader_redBall, view, camPos, projection);
         
         glActiveTexture(GL_TEXTURE3);
         glBindTexture(GL_TEXTURE_2D, noiseMap);
         
-//        pbrShader_redBall.setFloat("scale", scale);
-//        pbrShader_redBall.setFloat("average", average);
-//        pbrShader_redBall.setFloat("standardDeviation", standardDeviation);
         
-        //=========================================================
-        //噪声图位移
-        timeNoiseMap += 0.001f;
-        pbrShader_redBall.setFloat("time", timeNoiseMap);//传到shader
-        //=========================================================
 
-
-        
-//        uniform float scale; //细，粗粒表面一个片元的微法线m的数量之比（微表面数量之比）
-//        uniform float average; //正态分布平均数
-//        uniform float standardDeviation; //标准差
-
-
-        
-        
         
         
         GORK::MaterialBalls(pbrShader_redBall, 7, 7, 2.5);
-////        // 使用材质定义的材质属性渲染行*列数的球体（它们都具有相同的材质属性）
-//        for (int row = 0; row < nrRows; ++row)//行数
-//        {
-//            pbrShader_redBall.setFloat("metallic", (float)row / (float)nrRows);//行数从下往上，金属度从低到高
-//
-//            for (int col = 0; col < nrColumns; ++col)//列数
-//            {
-//                // 我们将粗糙度限制在0.025-1.0，因为完全光滑的表面（0.0的粗糙度）看起来有点偏离
-//                // 在直接照明下 on direct lighting.
-//                pbrShader_redBall.setFloat("roughness", glm::clamp((float)col / (float)nrColumns, 0.0f, 1.0f));//列数从左到右，粗糙度从小到大
-//
-//                model = glm::mat4(1.0f);
-//                model = glm::translate(model, glm::vec3(
-//                                                        (float)(col - (nrColumns / 2)) * spacing,
-//                                                        (float)(row - (nrRows / 2)) * spacing,
-//                                                        -2.0f
-//                                                        ));
-////                model = glm::translate(model, glm::vec3(
-////                                                        (float)(col - (nrColumns / 2)) * spacing,
-////                                                        (float)(row - (nrRows / 2)) * spacing,
-////                                                        -2.0f
-////                                                        )+ glm::vec3(0.005*sin(glfwGetTime()) * 4.0f));
-//                pbrShader_redBall.setMat4("model", model);
-//                GORK::RenderSphere();
-////                bunny.Draw(pbrShader_redBall);
-////                GORK::RenderCube();
-//            }
-//
-//        }
+        // 使用材质定义的材质属性渲染行*列数的球体（它们都具有相同的材质属性）
 
 ////-------------------------------------------
         
         GORK::SetLights(lightPositions, lightColors, pbrShader, pbrShader_redBall);
         
-//////        //传光源数据。并为了方便用同一个shader画出光源球
-//        for (unsigned int i = 0; i < sizeof(lightPositions) / sizeof(lightPositions[0]); ++i)
-//        {
-//            i = 3;
-//
-//            glm::vec3 newPos = lightPositions[i] + glm::vec3(sin(glfwGetTime() * 5.0) * 5.0, 0.0, 0.0);
-//            newPos = lightPositions[i];
-////            newPos = lightPos;
-//            pbrShader_redBall.setVec3("lightPositions[" + std::to_string(i) + "]", newPos);
-//            pbrShader_redBall.setVec3("lightColors[" + std::to_string(i) + "]", lightColors[i]);
-//            pbrShader.use();
-//            pbrShader.setVec3("lightPositions[" + std::to_string(i) + "]", newPos);
-//            pbrShader.setVec3("lightColors[" + std::to_string(i) + "]", lightColors[i]);
-////
-////            // 画光源球
-////            model = glm::mat4(1.0f);
-////            model = glm::translate(model, newPos);
-////            model = glm::scale(model, glm::vec3(0.5f));
-////            pbrShader_redBall.setMat4("model", model);
-////            GORK::RenderSphere();
-//        }
+        //传光源数据。并为了方便用同一个shader画出光源球
+
 ////-------------------------------------------
 
 
