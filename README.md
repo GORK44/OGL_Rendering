@@ -1,1 +1,2 @@
-# OGL_Rendering
+＃OGL_Rendering
+LearnOpenGL教程代码简单封装
