@@ -891,3 +891,33 @@ void GORK::ShaderSet(Shader shader, glm::mat4 view, glm::vec3 camPos, glm::mat4 
     shader.setVec3("camPos", camPos);
     shader.setMat4("projection", projection);
 }
+
+
+void GORK::TextureAttachments(unsigned int &gAttachment, int attachmentNumber)
+{
+    if(attachmentNumber < 2)//对于位置和法向量的纹理，我们希望使用高精度的纹理(每分量16或32位的浮点数)
+    {
+        // 颜色缓冲  color buffer
+        glGenTextures(1, &gAttachment);//生成 1 个纹理，保存ID到textureColorbuffer
+        glBindTexture(GL_TEXTURE_2D, gAttachment);// 绑定纹理，接下来所有GL_TEXTURE_2D操作都是对此纹理
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);//生成一个纹理
+        //参数：纹理目标GL_TEXTURE_2D，Mipmap级别0，纹理存储为RGB格式，宽度，高度，历史遗留总是0，使用RGB值加载，储存为char(byte)数组，图像数据（不初始化）
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);//线性过滤
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attachmentNumber, GL_TEXTURE_2D, gAttachment, 0);//把纹理附加到帧缓冲
+        //参数：缓冲的目标，附加一个颜色附件，附加的纹理类型，附加的纹理本身，多级渐远纹理的级别0
+    }
+    else if (attachmentNumber == 2)//而对于反照率和镜面值，使用(RGBA四通道)默认的纹理(每分量8位浮点数)就够了。
+    {
+        // 漫反射颜色+镜面反射 颜色缓冲 color + specular color buffer
+        glGenTextures(1, &gAttachment);
+        glBindTexture(GL_TEXTURE_2D, gAttachment);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attachmentNumber, GL_TEXTURE_2D, gAttachment, 0);
+    }
+    
+}
+
+

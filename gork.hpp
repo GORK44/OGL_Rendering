@@ -262,6 +262,15 @@ public:
     
     static void ShaderSet(Shader shader, glm::mat4 view, glm::vec3 camPos, glm::mat4 projection);
     
+    
+    //================================================
+    static void TextureAttachments(unsigned int &gAttachment, int attachmentNumber);
+    
+    
+    //================================================
+
+    
+    
 };
 
 

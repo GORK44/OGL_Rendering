@@ -733,29 +733,35 @@ int main()
     // ------------------------------
     unsigned int gBuffer;
     glGenFramebuffers(1, &gBuffer); //创建一个帧缓冲对象
-    glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, gBuffer); //将它绑定为激活的(Active)帧缓冲，做一些操作，之后解绑帧缓冲。
     unsigned int gPosition, gNormal, gAlbedoSpec; //三张纹理附件
-    // 位置颜色缓冲 position color buffer
-    glGenTextures(1, &gPosition);
-    glBindTexture(GL_TEXTURE_2D, gPosition);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, 0);
-    // 法线颜色缓冲 normal color buffer
-    glGenTextures(1, &gNormal);
-    glBindTexture(GL_TEXTURE_2D, gNormal);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
-    // 漫反射颜色+镜面反射 颜色缓冲 color + specular color buffer
-    glGenTextures(1, &gAlbedoSpec);
-    glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedoSpec, 0);
+//    // 位置颜色缓冲 position color buffer
+//    glGenTextures(1, &gPosition);
+//    glBindTexture(GL_TEXTURE_2D, gPosition);
+//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, 0);
+    GORK::TextureAttachments(gPosition, 0);
+    
+//    // 法线颜色缓冲 normal color buffer
+//    glGenTextures(1, &gNormal);
+//    glBindTexture(GL_TEXTURE_2D, gNormal);
+//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
+    GORK::TextureAttachments(gNormal, 1);
+    
+////    // 漫反射颜色+镜面反射 颜色缓冲 color + specular color buffer
+//    glGenTextures(1, &gAlbedoSpec);
+//    glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
+//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedoSpec, 0);
+    GORK::TextureAttachments(gAlbedoSpec, 2);
+
     // tell OpenGL which color attachments we'll use (of this framebuffer) for rendering
     unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };//传递多个颜色纹理附件的枚举
     glDrawBuffers(3, attachments);//当渲染到这个帧缓冲中的时候，每当着色器使用location(=0或=1或=2)，那么fragment就会用相应的颜色缓冲就会被用来渲染。
@@ -772,7 +778,7 @@ int main()
     
     // lighting info
     // -------------
-    const unsigned int NR_LIGHTS = 10;
+    const unsigned int NR_LIGHTS = 20;
     std::vector<glm::vec3> lightPositions;
     std::vector<glm::vec3> lightColors;
     srand(13);
@@ -828,33 +834,31 @@ int main()
     
     
     
-    //构建并编译着色器程序
-    //========================================================================
     
     //构建并编译着色器程序
     //========================================================================
     
-    Shader whiteShader("/书/OGL_Test/Shader/singleColor.vs", "/书/OGL_Test/Shader/singleColor.fs");
-    
-    Shader myShader("/书/OGL_Test/Shader/simpleVS.vs", "/书/OGL_Test/Shader/simpleFS.fs");
-    myShader.use();
-    myShader.setInt("floorTexture", 0);
-    
-    
-    Shader screenShader("/书/OGL_Test/Shader/screen.vs", "/书/OGL_Test/Shader/screen.fs");//帧缓冲
-    screenShader.use();
-    screenShader.setInt("screenTexture", 0);
-    
-    
-    Shader skyboxShader("/书/OGL_Test/Shader/skyBox.vs","/书/OGL_Test/Shader/skyBox.fs");
-    skyboxShader.use();
-    skyboxShader.setInt("skybox", 0);
-    
-    
-    Shader geometryShader("/书/OGL_Test/Shader/geometry.vs", "/书/OGL_Test/Shader/geometry.fs", "/书/OGL_Test/Shader/geometry.gs");
-    
-    
-    Shader instanceShader("/书/OGL_Test/Shader/instance.vs","/书/OGL_Test/Shader/instance.fs");
+//    Shader whiteShader("/书/OGL_Test/Shader/singleColor.vs", "/书/OGL_Test/Shader/singleColor.fs");
+//
+//    Shader myShader("/书/OGL_Test/Shader/simpleVS.vs", "/书/OGL_Test/Shader/simpleFS.fs");
+//    myShader.use();
+//    myShader.setInt("floorTexture", 0);
+//
+//
+//    Shader screenShader("/书/OGL_Test/Shader/screen.vs", "/书/OGL_Test/Shader/screen.fs");//帧缓冲
+//    screenShader.use();
+//    screenShader.setInt("screenTexture", 0);
+//
+//
+//    Shader skyboxShader("/书/OGL_Test/Shader/skyBox.vs","/书/OGL_Test/Shader/skyBox.fs");
+//    skyboxShader.use();
+//    skyboxShader.setInt("skybox", 0);
+//
+//
+//    Shader geometryShader("/书/OGL_Test/Shader/geometry.vs", "/书/OGL_Test/Shader/geometry.fs", "/书/OGL_Test/Shader/geometry.gs");
+//
+//
+//    Shader instanceShader("/书/OGL_Test/Shader/instance.vs","/书/OGL_Test/Shader/instance.fs");
     
     
     
