@@ -61,6 +61,7 @@ int main()
     glGenFramebuffers(1, &gBuffer); //创建一个帧缓冲对象
     glBindFramebuffer(GL_FRAMEBUFFER, gBuffer); //将它绑定为激活的(Active)帧缓冲，做一些操作，之后解绑帧缓冲。
     unsigned int gPosition, gNormal, gAlbedoSpec; //三张纹理附件
+    
     // 位置颜色缓冲 position color buffer
     GORK::TextureAttachments(gPosition, 0);
     
