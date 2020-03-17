@@ -762,19 +762,25 @@ int main()
 //    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedoSpec, 0);
     GORK::TextureAttachments(gAlbedoSpec, 2);
 
-    // tell OpenGL which color attachments we'll use (of this framebuffer) for rendering
+    // 告诉OpenGL我们将使用（此帧缓冲区的）哪些颜色附件进行渲染tell OpenGL which color attachments we'll use (of this framebuffer) for rendering
     unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };//传递多个颜色纹理附件的枚举
     glDrawBuffers(3, attachments);//当渲染到这个帧缓冲中的时候，每当着色器使用location(=0或=1或=2)，那么fragment就会用相应的颜色缓冲就会被用来渲染。
+    
+    
     // 深度缓冲：渲染缓冲对象（只写） create and attach depth buffer (renderbuffer)
     unsigned int rboDepth;//写入深度用于测试
-    glGenRenderbuffers(1, &rboDepth);
-    glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+//    glGenRenderbuffers(1, &rboDepth);
+//    glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+//    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT);
+//    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+    GORK::RenderBufferObject(rboDepth);
+    
+    
     // finally check if framebuffer is complete
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         std::cout << "Framebuffer not complete!" << std::endl;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
     
     // lighting info
     // -------------
@@ -837,34 +843,6 @@ int main()
     
     //构建并编译着色器程序
     //========================================================================
-    
-//    Shader whiteShader("/书/OGL_Test/Shader/singleColor.vs", "/书/OGL_Test/Shader/singleColor.fs");
-//
-//    Shader myShader("/书/OGL_Test/Shader/simpleVS.vs", "/书/OGL_Test/Shader/simpleFS.fs");
-//    myShader.use();
-//    myShader.setInt("floorTexture", 0);
-//
-//
-//    Shader screenShader("/书/OGL_Test/Shader/screen.vs", "/书/OGL_Test/Shader/screen.fs");//帧缓冲
-//    screenShader.use();
-//    screenShader.setInt("screenTexture", 0);
-//
-//
-//    Shader skyboxShader("/书/OGL_Test/Shader/skyBox.vs","/书/OGL_Test/Shader/skyBox.fs");
-//    skyboxShader.use();
-//    skyboxShader.setInt("skybox", 0);
-//
-//
-//    Shader geometryShader("/书/OGL_Test/Shader/geometry.vs", "/书/OGL_Test/Shader/geometry.fs", "/书/OGL_Test/Shader/geometry.gs");
-//
-//
-//    Shader instanceShader("/书/OGL_Test/Shader/instance.vs","/书/OGL_Test/Shader/instance.fs");
-    
-    
-    
-    
-    
-    
     //Deferred Shading
     Shader shader_GeometryPass("/书/OGL_Test/Shader/G_buffer.vs", "/书/OGL_Test/Shader/G_buffer.fs");
     Shader shader_LightingPass("/书/OGL_Test/Shader/deferred_shading.vs", "/书/OGL_Test/Shader/deferred_shading.fs");

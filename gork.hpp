@@ -266,6 +266,7 @@ public:
     //================================================
     static void TextureAttachments(unsigned int &gAttachment, int attachmentNumber);
     
+    static void RenderBufferObject(unsigned int &rboDepth);
     
     //================================================
 

@@ -920,4 +920,10 @@ void GORK::TextureAttachments(unsigned int &gAttachment, int attachmentNumber)
     
 }
 
-
+void GORK::RenderBufferObject(unsigned int &rboDepth)
+{
+    glGenRenderbuffers(1, &rboDepth);
+    glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+}
