@@ -19,7 +19,7 @@
 
 #include "Shader.hpp"
 #include "Camera.hpp"
-//#include "Model.hpp"
+#include "Model.hpp"
 
 #include "gork.hpp"
 
@@ -238,7 +238,7 @@ public:
     static void SetupFramebuffer(unsigned int &captureFBO, unsigned int &captureRBO); // IBL 漫反射辐照度
     // pbr: setup framebuffer 设定帧缓冲（记录HDR转换为立方体的六个面）
     
-    static void HdrToCubemap(unsigned int &envCubemap, glm::mat4 captureProjection, glm::mat4 captureViews[6]);//HDR转换成立方体贴图
+    static void HdrToCubemap(unsigned int &envCubemap, glm::mat4 &captureProjection, glm::mat4 * captureViews);//HDR转换成立方体贴图
     
     static void CreateIrradianceMap(unsigned int &irradianceMap, unsigned int &envCubemap, unsigned int &captureFBO, unsigned int &captureRBO, glm::mat4 captureProjection, glm::mat4 captureViews[6]);//创建漫反射辐照度贴图
     
@@ -249,25 +249,42 @@ public:
     //======================
     
     
-    static void ShaderSet_PBR_Ball(Shader pbrShader_redBall);
+    static void ShaderSet_PBR_Ball(Shader &pbrShader_redBall);
     
-    static void ShaderSet_PBR_Model(Shader pbrShader);
+    static void ShaderSet_PBR_Model(Shader &pbrShader);
 
     
     static glm::mat4 * CubeCapture();
     
-    static void SetLights(glm::vec3 * lightPositions, glm::vec3 * lightColors, Shader pbrShader, Shader pbrShader_redBall);
+    static void SetLights(glm::vec3 * lightPositions, glm::vec3 * lightColors, Shader &pbrShader, Shader &pbrShader_redBall);
 
-    static void MaterialBalls(Shader pbrShader_redBall, int nrRows = 7, int nrColumns = 7, float spacing = 2.5);
+    static void MaterialBalls(Shader &pbrShader_redBall, int nrRows = 7, int nrColumns = 7, float spacing = 2.5);
     
-    static void ShaderSet(Shader shader, glm::mat4 view, glm::vec3 camPos, glm::mat4 projection);
+    static void ShaderSet(Shader &shader, glm::mat4 &view, glm::vec3 &camPos, glm::mat4 &projection);
     
     
     //================================================
+    //deferred
     static void TextureAttachments(unsigned int &gAttachment, int attachmentNumber);
     
     static void RenderBufferObject(unsigned int &rboDepth);
     
+    static void SetDeferredLightInfo(const unsigned int NR_LIGHTS, std::vector<glm::vec3> &lightPositions, std::vector<glm::vec3> &lightColors);
+    
+    static std::vector<glm::vec3> DeferredObjectPositions();
+    
+    static void gBufferBind(unsigned int gBuffer);
+    static void gBufferUnBind();
+    
+    static void DrawNanosuits(std::vector<glm::vec3> &objectPositions, Shader &shader_GeometryPass, Model &nanosuit);
+    
+    static void ShaderBindTextures_gBuffer(Shader &shader_LightingPass, unsigned int gPosition, unsigned int gNormal, unsigned int gAlbedoSpec);
+    
+    static void ShaderSetLights_deferred(Shader &shader_LightingPass, std::vector<glm::vec3> &lightPositions, std::vector<glm::vec3> &lightColors);
+    
+    static void SetDepthBuffer_gBuffer(unsigned int gBuffer);
+    
+    static void DrawLights_deferred(Shader &shader_LightBox, std::vector<glm::vec3> &lightPositions, std::vector<glm::vec3> &lightColors);
     //================================================
 
     

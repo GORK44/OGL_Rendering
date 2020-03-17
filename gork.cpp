@@ -524,7 +524,7 @@ void GORK::SetupFramebuffer(unsigned int &captureFBO, unsigned int &captureRBO)
 
 
 
-void GORK::HdrToCubemap(unsigned int &envCubemap, glm::mat4 captureProjection, glm::mat4 captureViews[6])
+void GORK::HdrToCubemap(unsigned int &envCubemap, glm::mat4 &captureProjection, glm::mat4 * captureViews)
 {
     
     
@@ -777,7 +777,7 @@ void GORK::CreateBrdfLUTTexture(unsigned int &brdfLUTTexture, unsigned int &capt
 }
 
 
-void GORK::ShaderSet_PBR_Ball(Shader pbrShader_redBall)
+void GORK::ShaderSet_PBR_Ball(Shader &pbrShader_redBall)
 {
     pbrShader_redBall.use();
     pbrShader_redBall.setInt("irradianceMap", 0);
@@ -789,7 +789,7 @@ void GORK::ShaderSet_PBR_Ball(Shader pbrShader_redBall)
     pbrShader_redBall.setInt("noiseMap", 3);
 }
 
-void GORK::ShaderSet_PBR_Model(Shader pbrShader)
+void GORK::ShaderSet_PBR_Model(Shader &pbrShader)
 {
     pbrShader.use();
     pbrShader.setInt("irradianceMap", 0);// shader中的 irradianceMap 对应 GL_TEXTURE0 绑定的纹理
@@ -823,7 +823,7 @@ glm::mat4 * GORK::CubeCapture()
     return captureViews;
 }
 
-void GORK::SetLights(glm::vec3 *lightPositions, glm::vec3 *lightColors, Shader pbrShader, Shader pbrShader_redBall)
+void GORK::SetLights(glm::vec3 *lightPositions, glm::vec3 *lightColors, Shader &pbrShader, Shader &pbrShader_redBall)
 {
     //传光源数据。并为了方便用同一个shader画出光源球
     for (unsigned int i = 0; i < sizeof(*lightPositions) / sizeof(lightPositions[0]); ++i)
@@ -850,7 +850,7 @@ void GORK::SetLights(glm::vec3 *lightPositions, glm::vec3 *lightColors, Shader p
     }
 }
 
-void GORK::MaterialBalls(Shader pbrShader_redBall, int nrRows, int nrColumns, float spacing)
+void GORK::MaterialBalls(Shader &pbrShader_redBall, int nrRows, int nrColumns, float spacing)
 {
     
     //        // 使用材质定义的材质属性渲染行*列数的球体（它们都具有相同的材质属性）
@@ -884,7 +884,7 @@ void GORK::MaterialBalls(Shader pbrShader_redBall, int nrRows, int nrColumns, fl
     }
 }
 
-void GORK::ShaderSet(Shader shader, glm::mat4 view, glm::vec3 camPos, glm::mat4 projection)
+void GORK::ShaderSet(Shader &shader, glm::mat4 &view, glm::vec3 &camPos, glm::mat4 &projection)
 {
     shader.use();
     shader.setMat4("view", view);
@@ -926,4 +926,120 @@ void GORK::RenderBufferObject(unsigned int &rboDepth)
     glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+}
+
+void GORK::SetDeferredLightInfo(const unsigned int NR_LIGHTS, std::vector<glm::vec3> &lightPositions, std::vector<glm::vec3> &lightColors)
+{
+        srand(13);
+        for (unsigned int i = 0; i < NR_LIGHTS; i++)
+        {
+            // 计算轻微的随机偏移 calculate slightly random offsets
+            float xPos = ((rand() % 100) / 100.0) * 6.0 - 3.0;
+            float yPos = ((rand() % 100) / 100.0) * 6.0 - 4.0;
+            float zPos = ((rand() % 100) / 100.0) * 6.0 - 3.0;
+            lightPositions.push_back(glm::vec3(xPos, yPos, zPos));
+            // 还计算随机颜色 also calculate random color
+            float rColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
+            float gColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
+            float bColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
+            lightColors.push_back(glm::vec3(rColor, gColor, bColor));
+        }
+}
+
+std::vector<glm::vec3> GORK::DeferredObjectPositions()
+{
+    std::vector<glm::vec3> objectPositions;
+    objectPositions.push_back(glm::vec3(-3.0,  -3.0, -3.0));
+    objectPositions.push_back(glm::vec3( 0.0,  -3.0, -3.0));
+    objectPositions.push_back(glm::vec3( 3.0,  -3.0, -3.0));
+    objectPositions.push_back(glm::vec3(-3.0,  -3.0,  0.0));
+    objectPositions.push_back(glm::vec3( 0.0,  -3.0,  0.0));
+    objectPositions.push_back(glm::vec3( 3.0,  -3.0,  0.0));
+    objectPositions.push_back(glm::vec3(-3.0,  -3.0,  3.0));
+    objectPositions.push_back(glm::vec3( 0.0,  -3.0,  3.0));
+    objectPositions.push_back(glm::vec3( 3.0,  -3.0,  3.0));
+    
+    return objectPositions;
+}
+
+void GORK::gBufferBind(unsigned int gBuffer)
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
+    glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void GORK::gBufferUnBind()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, SCR_WIDTH*2, SCR_HEIGHT*2);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void GORK::DrawNanosuits(std::vector<glm::vec3> &objectPositions, Shader &shader_GeometryPass, Model &nanosuit)
+{
+    for (unsigned int i = 0; i < objectPositions.size(); i++)
+    {
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, objectPositions[i]);
+        model = glm::scale(model, glm::vec3(0.25f));
+        shader_GeometryPass.setMat4("model", model);
+        nanosuit.Draw(shader_GeometryPass);
+    }
+}
+
+void GORK::ShaderBindTextures_gBuffer(Shader &shader_LightingPass, unsigned int gPosition, unsigned int gNormal, unsigned int gAlbedoSpec)
+{
+    shader_LightingPass.use();
+    shader_LightingPass.setInt("gPosition", 0);
+    shader_LightingPass.setInt("gNormal", 1);
+    shader_LightingPass.setInt("gAlbedoSpec", 2);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, gPosition);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, gNormal);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
+}
+
+void GORK::ShaderSetLights_deferred(Shader &shader_LightingPass, std::vector<glm::vec3> &lightPositions, std::vector<glm::vec3> &lightColors)
+{
+    // 传递光的相关参数 send light relevant uniforms
+    for (unsigned int i = 0; i < lightPositions.size(); i++)
+    {
+        shader_LightingPass.setVec3("lights[" + std::to_string(i) + "].Position", lightPositions[i]);
+        shader_LightingPass.setVec3("lights[" + std::to_string(i) + "].Color", lightColors[i]);
+        // 更新衰减参数并计算半径 update attenuation parameters and calculate radius
+        const float constant = 1.0; // 请注意，我们不会将其发送给着色器，我们假设它始终为1.0（在我们的示例中）
+        const float linear = 0.7;
+        const float quadratic = 1.8;
+        shader_LightingPass.setFloat("lights[" + std::to_string(i) + "].Linear", linear);
+        shader_LightingPass.setFloat("lights[" + std::to_string(i) + "].Quadratic", quadratic);
+        // 然后计算光体积的半径 then calculate radius of light volume/sphere
+        const float maxBrightness = std::fmaxf(std::fmaxf(lightColors[i].r, lightColors[i].g), lightColors[i].b);
+        float radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (256.0f / 5.0f) * maxBrightness))) / (2.0f * quadratic);
+        shader_LightingPass.setFloat("lights[" + std::to_string(i) + "].Radius", radius);
+    }
+    shader_LightingPass.setVec3("viewPos", GORK::camera.Position);
+}
+
+void GORK::SetDepthBuffer_gBuffer(unsigned int gBuffer)
+{
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // 写入到默认帧缓冲write to default framebuffer
+    glBlitFramebuffer(0, 0, SCR_WIDTH, SCR_HEIGHT, 0, 0, SCR_WIDTH*2, SCR_HEIGHT*2, GL_DEPTH_BUFFER_BIT, GL_NEAREST); //mac视网膜屏。对于glBlitFramebuffer，读取和绘制帧缓冲区分别是绑定到GL_READ_FRAMEBUFFER和GL_DRAW_FRAMEBUFFER目标的缓冲区。
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void GORK::DrawLights_deferred(Shader &shader_LightBox, std::vector<glm::vec3> &lightPositions, std::vector<glm::vec3> &lightColors)
+{
+    for (unsigned int i = 0; i < lightPositions.size(); i++)
+    {
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, lightPositions[i]);
+        model = glm::scale(model, glm::vec3(0.125f));
+        shader_LightBox.setMat4("model", model);
+        shader_LightBox.setVec3("lightColor", lightColors[i]);
+        GORK::RenderCube();
+    }
 }
