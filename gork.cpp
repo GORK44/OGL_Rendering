@@ -1043,3 +1043,16 @@ void GORK::DrawLights_deferred(Shader &shader_LightBox, std::vector<glm::vec3> &
         GORK::RenderCube();
     }
 }
+
+void GORK::BindTexture_IBL(unsigned int irradianceMap, unsigned int prefilterMap, unsigned int brdfLUTTexture)
+{
+    // IBL1 Diffuse irradiance: bind pre-computed IBL data (在shader中绑定辐照度贴图)
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
+    //        glActiveTexture(GL_TEXTURE1);
+    //        glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, brdfLUTTexture);
+}

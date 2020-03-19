@@ -246,6 +246,7 @@ public:
     
     static void CreateBrdfLUTTexture(unsigned int &brdfLUTTexture, unsigned int &captureFBO, unsigned int &captureRBO);//根据所使用的BRDF方程生成2D LUT
     
+    static void BindTexture_IBL(unsigned int irradianceMap, unsigned int prefilterMap, unsigned int brdfLUTTexture);
     //======================
     
     
