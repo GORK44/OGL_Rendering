@@ -51,58 +51,58 @@ int main()
 
 
 
-//    //========================================================================
-//    // 配置 g-buffer 帧缓冲区 configure g-buffer framebuffer
-//    // ------------------------------
-//    unsigned int gBuffer;
-//    glGenFramebuffers(1, &gBuffer); //创建一个帧缓冲对象
-//    glBindFramebuffer(GL_FRAMEBUFFER, gBuffer); //将它绑定为激活的(Active)帧缓冲，做一些操作，之后解绑帧缓冲。
-//    unsigned int gPosition, gNormal, gAlbedoSpec; //三张纹理附件
-////    // 位置颜色缓冲 position color buffer
-////    glGenTextures(1, &gPosition);
-////    glBindTexture(GL_TEXTURE_2D, gPosition);
-////    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
-////    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-////    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-////    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, 0);
-//    GORK::TextureAttachments(gPosition, 0);
-//
-////    // 法线颜色缓冲 normal color buffer
-////    glGenTextures(1, &gNormal);
-////    glBindTexture(GL_TEXTURE_2D, gNormal);
-////    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
-////    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-////    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-////    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
-//    GORK::TextureAttachments(gNormal, 1);
-//
-//////    // 漫反射颜色+镜面反射 颜色缓冲 color + specular color buffer
-////    glGenTextures(1, &gAlbedoSpec);
-////    glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
-////    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-////    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-////    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-////    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedoSpec, 0);
-//    GORK::TextureAttachments(gAlbedoSpec, 2);
-//
-//    // 告诉OpenGL我们将使用（此帧缓冲区的）哪些颜色附件进行渲染tell OpenGL which color attachments we'll use (of this framebuffer) for rendering
-//    unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };//传递多个颜色纹理附件的枚举
-//    glDrawBuffers(3, attachments);//当渲染到这个帧缓冲中的时候，每当着色器使用location(=0或=1或=2)，那么fragment就会用相应的颜色缓冲就会被用来渲染。
-//
-//
-//    // 深度缓冲：渲染缓冲对象（只写） create and attach depth buffer (renderbuffer)
-//    unsigned int rboDepth;//写入深度用于测试
-////    glGenRenderbuffers(1, &rboDepth);
-////    glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
-////    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT);
-////    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
-//    GORK::RenderBufferObject(rboDepth);
-//
-//
-//    // finally check if framebuffer is complete
-//    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-//        std::cout << "Framebuffer not complete!" << std::endl;
-//    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    //========================================================================
+    // 配置 g-buffer 帧缓冲区 configure g-buffer framebuffer
+    // ------------------------------
+    unsigned int gBuffer;
+    glGenFramebuffers(1, &gBuffer); //创建一个帧缓冲对象
+    glBindFramebuffer(GL_FRAMEBUFFER, gBuffer); //将它绑定为激活的(Active)帧缓冲，做一些操作，之后解绑帧缓冲。
+    unsigned int gPosition, gNormal, gAlbedoSpec; //三张纹理附件
+//    // 位置颜色缓冲 position color buffer
+//    glGenTextures(1, &gPosition);
+//    glBindTexture(GL_TEXTURE_2D, gPosition);
+//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, 0);
+    GORK::TextureAttachments(gPosition, 0);
+
+//    // 法线颜色缓冲 normal color buffer
+//    glGenTextures(1, &gNormal);
+//    glBindTexture(GL_TEXTURE_2D, gNormal);
+//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
+    GORK::TextureAttachments(gNormal, 1);
+
+////    // 漫反射颜色+镜面反射 颜色缓冲 color + specular color buffer
+//    glGenTextures(1, &gAlbedoSpec);
+//    glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
+//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedoSpec, 0);
+    GORK::TextureAttachments(gAlbedoSpec, 2);
+
+    // 告诉OpenGL我们将使用（此帧缓冲区的）哪些颜色附件进行渲染tell OpenGL which color attachments we'll use (of this framebuffer) for rendering
+    unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };//传递多个颜色纹理附件的枚举
+    glDrawBuffers(3, attachments);//当渲染到这个帧缓冲中的时候，每当着色器使用location(=0或=1或=2)，那么fragment就会用相应的颜色缓冲就会被用来渲染。
+
+
+    // 深度缓冲：渲染缓冲对象（只写） create and attach depth buffer (renderbuffer)
+    unsigned int rboDepth;//写入深度用于测试
+//    glGenRenderbuffers(1, &rboDepth);
+//    glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+//    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT);
+//    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+    GORK::RenderBufferObject(rboDepth);
+
+
+    // finally check if framebuffer is complete
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "Framebuffer not complete!" << std::endl;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 //
 //
 //    // 照明信息 lighting info
@@ -130,56 +130,17 @@ int main()
 
     
     //========================================================================
-    ////SSAO
-    // configure g-buffer framebuffer
-    // ------------------------------
-    unsigned int gBuffer;
-    glGenFramebuffers(1, &gBuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
-    unsigned int gPosition, gNormal, gAlbedo;
-    // position color buffer
-    glGenTextures(1, &gPosition);
-    glBindTexture(GL_TEXTURE_2D, gPosition);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, 0);
-    // normal color buffer
-    glGenTextures(1, &gNormal);
-    glBindTexture(GL_TEXTURE_2D, gNormal);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
-    // color + specular color buffer
-    glGenTextures(1, &gAlbedo);
-    glBindTexture(GL_TEXTURE_2D, gAlbedo);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedo, 0);
-    // tell OpenGL which color attachments we'll use (of this framebuffer) for rendering
-    unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-    glDrawBuffers(3, attachments);
-    // create and attach depth buffer (renderbuffer)
-    unsigned int rboDepth;
-    glGenRenderbuffers(1, &rboDepth);
-    glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
-    // finally check if framebuffer is complete
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "Framebuffer not complete!" << std::endl;
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+//    ////SSAO
+
     
-    // also create framebuffer to hold SSAO processing stage
+    // 还创建帧缓冲区以保存SSAO处理阶段 also create framebuffer to hold SSAO processing stage
     // -----------------------------------------------------
     unsigned int ssaoFBO, ssaoBlurFBO;
     glGenFramebuffers(1, &ssaoFBO);  glGenFramebuffers(1, &ssaoBlurFBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, ssaoFBO);
+    
     unsigned int ssaoColorBuffer, ssaoColorBufferBlur;
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, ssaoFBO);
     // SSAO color buffer
     glGenTextures(1, &ssaoColorBuffer);
     glBindTexture(GL_TEXTURE_2D, ssaoColorBuffer);
@@ -189,8 +150,10 @@ int main()
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ssaoColorBuffer, 0);
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         std::cout << "SSAO Framebuffer not complete!" << std::endl;
-    // and blur stage
+    
+    
     glBindFramebuffer(GL_FRAMEBUFFER, ssaoBlurFBO);
+    // 和模糊阶段 and blur stage
     glGenTextures(1, &ssaoColorBufferBlur);
     glBindTexture(GL_TEXTURE_2D, ssaoColorBufferBlur);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
@@ -200,6 +163,8 @@ int main()
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         std::cout << "SSAO Blur Framebuffer not complete!" << std::endl;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    
     
     // generate sample kernel
     // ----------------------
@@ -293,18 +258,8 @@ int main()
     //模型
 //    Shader modelShader("/书/OGL_Test/Shader/model.vs", "/书/OGL_Test/Shader/model.fs");
     Model nanosuit("/书/OGL_Test/nanosuit/nanosuit.obj");
-    //    Shader model_normal_Shader("/书/OGL_Test/Shader/modelVS.vs", "/书/OGL_Test/Shader/modelFS.fs");
-    //    Model personN("/书/OGL_Test/nanosuit/nanosuit.obj");
 //    std::vector<glm::vec3> objectPositions = GORK::DeferredObjectPositions();
-//    objectPositions.push_back(glm::vec3(-3.0,  -3.0, -3.0));
-//    objectPositions.push_back(glm::vec3( 0.0,  -3.0, -3.0));
-//    objectPositions.push_back(glm::vec3( 3.0,  -3.0, -3.0));
-//    objectPositions.push_back(glm::vec3(-3.0,  -3.0,  0.0));
-//    objectPositions.push_back(glm::vec3( 0.0,  -3.0,  0.0));
-//    objectPositions.push_back(glm::vec3( 3.0,  -3.0,  0.0));
-//    objectPositions.push_back(glm::vec3(-3.0,  -3.0,  3.0));
-//    objectPositions.push_back(glm::vec3( 0.0,  -3.0,  3.0));
-//    objectPositions.push_back(glm::vec3( 3.0,  -3.0,  3.0));
+
 
     
     // SSAO
@@ -453,7 +408,7 @@ int main()
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, gNormal);
         glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, gAlbedo);
+        glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
         glActiveTexture(GL_TEXTURE3); // add extra SSAO texture to lighting pass
         glBindTexture(GL_TEXTURE_2D, ssaoColorBufferBlur);
         GORK::RenderQuad();
