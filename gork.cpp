@@ -1056,3 +1056,25 @@ void GORK::BindTexture_IBL(unsigned int irradianceMap, unsigned int prefilterMap
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, brdfLUTTexture);
 }
+
+
+float GORK::Lerp(float a, float b, float f)
+{
+    return a + f * (b - a);
+}
+
+
+void GORK::TextureAttachments_SSAO(unsigned int ssaoFBO, unsigned int &ssaoColorBuffer)
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, ssaoFBO);
+    // SSAO color buffer
+    glGenTextures(1, &ssaoColorBuffer);
+    glBindTexture(GL_TEXTURE_2D, ssaoColorBuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ssaoColorBuffer, 0);
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "SSAO Framebuffer not complete!" << std::endl;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}

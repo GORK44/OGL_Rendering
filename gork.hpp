@@ -231,6 +231,10 @@ public:
     static void RenderCube();
     static void RenderQuad();
     static void RenderSphere();
+    
+    
+    //插值
+    static float Lerp(float a, float b, float f);
 
     
     //======================
@@ -266,7 +270,7 @@ public:
     
     //================================================
     //deferred
-    static void TextureAttachments(unsigned int &gAttachment, int attachmentNumber);
+    static void TextureAttachments(unsigned int &gAttachment, int attachmentNumber);//纹理附件
     
     static void RenderBufferObject(unsigned int &rboDepth);
     
@@ -286,6 +290,9 @@ public:
     static void SetDepthBuffer_gBuffer(unsigned int gBuffer);
     
     static void DrawLights_deferred(Shader &shader_LightBox, std::vector<glm::vec3> &lightPositions, std::vector<glm::vec3> &lightColors);
+    
+    
+    static void TextureAttachments_SSAO(unsigned int ssaoFBO, unsigned int &ssaoColorBuffer);//纹理附件
     //================================================
 
     
