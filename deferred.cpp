@@ -30,10 +30,6 @@
 //摄像机
 Camera GORK::camera(glm::vec3(0.0f, 0.0f, 2.0f));
 
-glm::vec3 cam = glm::vec3(0.0,0.0,50.0);
-
-
-
 int main()
 {
     
